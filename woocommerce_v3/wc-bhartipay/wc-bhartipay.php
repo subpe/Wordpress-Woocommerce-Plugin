@@ -42,7 +42,7 @@ function woocommerce_bhartipay_init()
             $this->currency_code        = $this->settings['currency_code'];
             $this->mode                 = $this->settings['mode'];
             // $this->pg_request_url       = 'https://merchant.bhartipay.com/crm/jsp/paymentrequest';
-            $this->pg_request_url       = 'http://uat.bhartipay.com/crm/jsp/paymentrequest';
+            $this->pg_request_url       = 'https://uat.bhartipay.com/crm/jsp/paymentrequest';
 
             // Actions
             add_action('init', array( $this, 'check_bhartipay_response' ));
