@@ -1,32 +1,32 @@
 <?php
 /*
- Plugin Name: Bhartipay Gateway for WooCommerce
- Plugin URI: http://www.bhartipay.com/
- Description: BhartiPay PG WooCommerce integration
+ Plugin Name: Subpe Gateway for WooCommerce
+ Plugin URI: http://www.subpe.com/
+ Description: SubPe PG WooCommerce integration
  Version: 1.0
- Author: Bhartipay <support@bhartipay.com>
- Author URI: http://www.bhartipay.com
+ Author: Subpe <support@subpe.com>
+ Author URI: http://www.subpe.com
  */
 
- add_action('plugins_loaded', 'woocommerce_bhartipay_init', 0);
+ add_action('plugins_loaded', 'woocommerce_subpe_init', 0);
 
 /**
- * [woocommerce_bhartipay_init description]
+ * [woocommerce_subpe_init description]
  * @return [type] [description]
  */
-function woocommerce_bhartipay_init()
+function woocommerce_subpe_init()
 {
     if (! class_exists('WC_Payment_Gateway')) {
         return;
     }
-    class WC_Gateway_BhartiPay extends WC_Payment_Gateway
+    class WC_Gateway_SubPe extends WC_Payment_Gateway
     {
         public function __construct()
         {
             global $woocommerce;
-            $this->id           = 'bhartipay';
-            $this->method_title = __('BhartiPay Payment Gateway', 'woocommerce');
-            $this->icon         = apply_filters('woocommerce_bhartipay_icon', plugins_url().'/wc-bhartipay/images/logo.png');
+            $this->id           = 'subpe';
+            $this->method_title = __('SubPe Payment Gateway', 'woocommerce');
+            $this->icon         = apply_filters('woocommerce_subpe_icon', plugins_url().'/wc-subpe/images/logo.png');
             $this->has_fields   = false;
 
             // Load the form fields and settings.
@@ -41,13 +41,13 @@ function woocommerce_bhartipay_init()
             $this->salt                 = $this->settings['salt'];
             $this->currency_code        = $this->settings['currency_code'];
             $this->mode                 = $this->settings['mode'];
-            // $this->pg_request_url       = 'https://merchant.bhartipay.com/crm/jsp/paymentrequest';
-            $this->pg_request_url       = 'https://uat.bhartipay.com/crm/jsp/paymentrequest';
+            // $this->pg_request_url       = 'https://merchant.subpe.com/crm/jsp/paymentrequest';
+            $this->pg_request_url       = 'https://uat.subpe.com/crm/jsp/paymentrequest';
 
             // Actions
-            add_action('init', array( $this, 'check_bhartipay_response' ));
-            add_action('woocommerce_api_wc_gateway_bhartipay', array( $this, 'check_bhartipay_response' ));
-            add_action('woocommerce_receipt_bhartipay', array(&$this, 'receipt_page'));
+            add_action('init', array( $this, 'check_subpe_response' ));
+            add_action('woocommerce_api_wc_gateway_subpe', array( $this, 'check_subpe_response' ));
+            add_action('woocommerce_receipt_subpe', array(&$this, 'receipt_page'));
 
             if (version_compare(WOOCOMMERCE_VERSION, '2.0.0', '>=')) {
                 add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options' ));
@@ -59,8 +59,8 @@ function woocommerce_bhartipay_init()
         // Generates the HTML for the admin settings page
         public function admin_options()
         {
-            echo '<h3>BhartiPay Payment Gateway</h3>';
-            echo '<p>BhartiPay Payment Gateway is a payment product which makes it extremely safe and easy to pay online.</p>';
+            echo '<h3>SubPe Payment Gateway</h3>';
+            echo '<p>SubPe Payment Gateway is a payment product which makes it extremely safe and easy to pay online.</p>';
             echo '<table class="form-table">';
             $this->generate_settings_html();
             echo '</table>';
@@ -110,7 +110,7 @@ function woocommerce_bhartipay_init()
         {
             global $woocommerce;
             $order = new WC_Order($order_id);
-            $this->return_url = trailingslashit(home_url()).'?wc-api=WC_Gateway_BhartiPay&order_id='.$order->id;
+            $this->return_url = trailingslashit(home_url()).'?wc-api=WC_Gateway_SubPe&order_id='.$order->id;
             $this->init_settings();
 
             require_once dirname(__FILE__).'/BPPGModule.php';
@@ -157,7 +157,7 @@ function woocommerce_bhartipay_init()
         }
 
         // check response from payment gateway
-        public function check_bhartipay_response()
+        public function check_subpe_response()
         {
             global $wpdb, $woocommerce;
             $order_id = $_GET['order_id'];
@@ -202,7 +202,7 @@ function woocommerce_bhartipay_init()
                 'enabled' => array(
                     'title'   => __( 'Enable/Disable', 'woocommerce' ), 
                     'type'    => 'checkbox', 
-                    'label'   => __( 'Enable BhartiPay Gateway', 'woocommerce' ), 
+                    'label'   => __( 'Enable SubPe Gateway', 'woocommerce' ), 
                     'default' => 'yes'
                 ), 
                 'mode' => array(
@@ -215,7 +215,7 @@ function woocommerce_bhartipay_init()
                     'title'       => __('Title', 'woocommerce'),
                     'type'        => 'text',
                     'description' => __('This controls the title which the user sees during checkout.', 'woocommerce'),
-                    'default'     => __('BhartiPay Gateway', 'woocommerce'),
+                    'default'     => __('SubPe Gateway', 'woocommerce'),
                     'desc_tip'    => true,
                 ),
                 'description' => array(
@@ -261,11 +261,11 @@ function woocommerce_bhartipay_init()
         } //
     }
 
-    function add_bhartipay_gateway($methods)
+    function add_subpe_gateway($methods)
     {
-        $methods[] = 'WC_Gateway_BhartiPay';
+        $methods[] = 'WC_Gateway_SubPe';
         return $methods;
     }
 
-    add_filter('woocommerce_payment_gateways', 'add_bhartipay_gateway');
+    add_filter('woocommerce_payment_gateways', 'add_subpe_gateway');
 }
